@@ -21,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
         private final JwtAuthFilter jwtAuthFilter;
 
+        //HttpSecurity is just a object to define rules
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
             return http
@@ -31,6 +32,23 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
             ).addFilterBefore(jwtAuthFilter,UsernamePasswordAuthenticationFilter.class)
                     .build();
         }
+
+        //You configure a UserDetailsService and PasswordEncoder somewhere in your Spring config.
+        //Spring uses these to build the AuthenticationManager behind the scenes.
+        //You use this method to expose the built AuthenticationManager:
+        //@Bean
+        //public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        //    return config.getAuthenticationManager();
+        //}
+        //You inject that manager into your login controller:
+        //
+        //authenticationManager.authenticate(
+        //    new UsernamePasswordAuthenticationToken(username, password)
+        //);
+        //This:
+        //Calls your UserDetailsService.loadUserByUsername(username)
+        //Verifies the password
+        //Authenticates the user if valid
 
         @Bean
         public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception{
