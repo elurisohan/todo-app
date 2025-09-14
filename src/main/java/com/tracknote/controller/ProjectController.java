@@ -34,18 +34,12 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.getProjectByUser(username));
     }
 
-    /*@PostMapping("/{id}")
-    public ResponseEntity<?> updateProject(@AuthenticationPrincipal UserDetails userDetails, @PathVariable int id,@Valid @RequestBody ProjectDTO projectDTO){
-        try{
-            boolean ifexists=projectService.existsByIdAndOwner(id,userDetails.getUsername());
-            projectService.getProject(id);
-            return ResponseEntity.ok(projectService.updateProject(id, projectDTO));
-        }
 
-    }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProject(@PathVariable int id){
-        return projectService.deleteProject(id);
-    }*/
+    public ResponseEntity<Void> deleteProject(@PathVariable int id, @AuthenticationPrincipal UserDetails userDetails){
+        String username=userDetails.getUsername();
+        projectService.deleteProject(id,username);
+        return ResponseEntity.noContent().build();
+    }
 }
