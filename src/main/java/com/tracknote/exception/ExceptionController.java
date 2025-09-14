@@ -40,12 +40,19 @@ public class ExceptionController {
     public ResponseEntity<Map<String,String>> handleValidationErrors(MethodArgumentNotValidException ex){
         Map<String,String> errors=new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error->errors.put(error.getField(),error.getDefaultMessage()));}
+        */
+
 
     @ExceptionHandler(UnauthorizedException.class)
         public ResponseEntity<?> unauthException(UnauthorizedException ex){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage);
-    */
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+
     }
+    @ExceptionHandler(ProjectDeletionException.class)
+    public ResponseEntity<?> projectDeletionException(ProjectDeletionException ex){
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+    }
+}
 
 
 @Data
