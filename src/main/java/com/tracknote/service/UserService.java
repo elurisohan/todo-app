@@ -20,12 +20,30 @@ public class UserService {
 
     public AuthResponse register(RegisterRequest request){
         if (userRepository.existsByUsername(request.getUsername())){
+            //Throwable class - Errors and Exceptions (Checked and Unchecked (RTE)).
+
             throw new RuntimeException("Username already exists");
         } else if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
 
         User newUser=User.builder().username(request.getUsername()).fullname(request.getName()).email(request.getEmail()).password(request.getPassword()).build();
+/* Theobject creation without a builder would look like:
+
+java
+User newUser = new User(
+    request.getUsername(),
+    request.getName(),
+    request.getEmail(),
+    request.getPassword()
+);
+Downsides without builder:
+The constructor call with multiple parameters can be confusing — it's not immediately clear which argument corresponds to which field.
+
+If you have many fields or optional parameters, you might end up with many overloaded constructors or pass null for unused fields.
+
+Immutable objects require many constructors or factory methods to accommodate different parameter combinations. */
+
 
         System.out.println("Saving user: " + newUser);
         userRepository.save(newUser);

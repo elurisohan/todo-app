@@ -34,7 +34,12 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.getProjectByUser(username));
     }
 
-
+//Update Project
+    @PatchMapping("/updateProject/{projectId}")
+    public ResponseEntity<?> updateProject(@AuthenticationPrincipal UserDetails userDetails, @PathVariable int projectId, @RequestBody ProjectDTO updatedProject){
+        String username=userDetails.getUsername();
+        return ResponseEntity.ok(updateProject(projectId,username,updatedProject));
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProject(@PathVariable int id, @AuthenticationPrincipal UserDetails userDetails){

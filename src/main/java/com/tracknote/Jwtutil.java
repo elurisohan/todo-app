@@ -15,7 +15,7 @@ import java.util.Base64;
 import java.util.Date;
 
 
-@Component
+@Component//tells Spring to automatically detect this class and create an instance of it as a singleton bean in the Spring application context during component scanning.
 public class Jwtutil {
 
     @Value("${jwt.secret}")
@@ -25,6 +25,15 @@ public class Jwtutil {
     public String generateToken(String username){
         //Since the key I have in app prop is base 64 encoded 256 bits key. We need to decode
         Key key= Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
+        /*This decodes the secret string, which is in Base64 format, into a byte array.
+Why: Because your secret is stored as a Base64-encoded string, and cryptographic functions work with raw bytes, not strings.
+
+JWT is stateless; server does not need to store session info.
+The secret key is used to sign the token (with HMAC or other algorithms).
+The client must present the token on every request for authorization.
+Tokens typically have expiry to enhance security.
+JWT improves scalability because no server-side session storage is needed. JWT is primarily about authorization*/
+
         return Jwts.builder().setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis()+1000*60*60))

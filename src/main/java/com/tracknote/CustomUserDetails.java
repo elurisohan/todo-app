@@ -17,6 +17,7 @@ public class CustomUserDetails implements UserDetailsService {
     UserRepository userRepository;
 
     @Override
+    /*overriding loadUserByUsername is mandatory to integrate custom user data with Spring Security's authentication system, enabling Spring to verify credentials and manage authorization. It provides a standard contract for loading user details instead of inventing a new method or interfac */
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
         User user =userRepository.findByUsername(username).
                 orElseThrow(()->new UserNotFoundException("User not found"));

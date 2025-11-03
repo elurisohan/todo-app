@@ -45,8 +45,10 @@ public class ProjectService {
         return projectRepository.findBySharedUsersUsername(username);
     }
 
-    public Project updateProject(int id, ProjectDTO updatedProject ){
+    public Project updateProject(int id, String username, ProjectDTO updatedProject ){
+        //Veri
         Project proj= getProject(id);
+        if
         proj.setName(updatedProject.getName());
         proj.setDescription(updatedProject.getDescription());
         return projectRepository.save(proj);
