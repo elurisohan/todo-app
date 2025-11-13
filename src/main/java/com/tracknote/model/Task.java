@@ -2,14 +2,16 @@ package com.tracknote.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.util.Date;
 
 @Data
 @Entity
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString(exclude = "project")
 public class Task {
 
     @GeneratedValue

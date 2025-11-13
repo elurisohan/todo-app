@@ -30,7 +30,7 @@ public class ProjectService {
 
     public ProjectResponseDTO createProject(String username, ProjectDTO project){
         User usr=getUserByUsername(username);
-        Project project1=Project.builder().name(project.getName()).description(project.getDescription()).owner(usr).build();
+        Project project1=Project.builder().name(project.getName()).description(project.getDescription()).tasks(project.getTasks()).owner(usr).build();// creates a new instance of your Project entity. Why create a new instance here? Entities represent rows in your database. You need an actual Project object to save a new project record.This object is used by Hibernate/JPA to know what data should be persisted in the database.
         Project savedProject= projectRepository.save(project1);
         return dtoMapper.toProjectResponse(savedProject);
     }
