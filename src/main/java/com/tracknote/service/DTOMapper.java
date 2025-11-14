@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -24,7 +26,9 @@ public class DTOMapper {
                 .desc(project.getDescription())
                 .createdAt(project.getCreatedAt())
                 //Task entity shouldn't be returned directly, as it could expose the id and the relationship bw Task and Project could recursively return infinite loop
-                .tasks(project.getTasks()
+                .tasks(
+                        Optional.ofNullable(project.getTasks())//Optional is a class and ofNullable is static method. Method chaining with '.' for ofNullable and orElse.
+                                .orElse(Collections.emptyList())
                         .stream()
                         .map(this::toTaskDTO)
                         .collect(Collectors.toList()))
