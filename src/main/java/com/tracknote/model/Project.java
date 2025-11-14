@@ -9,7 +9,7 @@ import java.util.*;
 
 @Data //getter setter methods, toString and equal to methods
 @Entity // to tell JPA that this class should be mapped to a table in DB . By default the class name is asusmed to be the tablen name
-@Table(name="project", uniqueConstraints = @UniqueConstraint(columnNames = {"name"})) // Only if we want to change schema , unique ocnstraints, and table name change
+@Table(name="project", uniqueConstraints = @UniqueConstraint(columnNames = {"owner_id","name"})) // Only if we want to change schema , unique ocnstraints, and table name change
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = "tasks")//field name you want to exclude to avoid stackoverflow eerror
