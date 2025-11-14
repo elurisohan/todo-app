@@ -29,7 +29,7 @@ public class Project {
     @Id
     private int id;
 
-    @Column( nullable = false, unique = true)
+    @Column( nullable = false)//Here adding constrabt as unique=True would be a global constraint. Which is the reason, to keep it limited to the table, mention it in the table annotation.
     private String name;
 
     private String description;
