@@ -51,16 +51,18 @@ public class ProjectService {
         return projectRepository.findBySharedUsersUsername(username);
     }
 
-    public Project updateProject(int id, String username, ProjectDTO updatedProject ) {
+    public ProjectResponseDTO updateProject(int id, String username, ProjectDTO updatedProject ) {
         //Veri
         Project proj = getProject(id);
         if (!proj.getOwner().getUsername().equals(username)) {
             throw new UnauthorizedException("User " + username + " not authorized to delete this project.");
         }
+            Project updatedPro= Project.builder().name(updatedProject.getName()).description(updatedProject.getDescription()).tasks(updatedProject.getTasks()).build();
 
-            proj.setName(updatedProject.getName());
-            proj.setDescription(updatedProject.getDescription());
-            return projectRepository.save(proj);
+//            proj.setName(updatedProject.getName());
+  //          proj.setDescription(updatedProject.getDescription());
+            Project updatedProj=projectRepository.save(updatedPro);
+            return dtoMapper.toProjectResponse(updatedProj);
 
     }
 
