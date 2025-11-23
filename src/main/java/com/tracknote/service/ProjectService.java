@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -35,9 +37,13 @@ public class ProjectService {
         return dtoMapper.toProjectResponse(savedProject);
     }
 
-    public List<Project> getProjectByUser(String username){
+    public List<ProjectResponseDTO> getProjectByUser(String username){
         //User username=getUserByUsername(username);
-        return projectRepository.findAllByOwnerUsername(username);
+        return projectRepository.findAllByOwnerUsername(username)
+                .stream()
+                .map(dtoMapper::toProjectResponse)//method reference. 2 types of syntax - classname::method | object::instancemethod
+                .collect(Collectors.toList());
+        /*Diff bw toList() terminal method and collect(Collectors.toList()) method is that the initial method gives an immutable list while the later gives a mutable list. */
     }
 
     public List<Project> getProjectBySharedUsers(String username){

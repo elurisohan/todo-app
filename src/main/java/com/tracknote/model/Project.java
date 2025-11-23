@@ -66,3 +66,21 @@ Sometimes switch to a more explicit builder configuration if you want full contr
     @OneToMany(mappedBy = "project",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Task> tasks=new ArrayList<>();
 }
+
+
+/*collections is an interface
+List, Set and  is an interface which extends it
+Map is not exactly a collection extension. Because all these classes extend collections, they've few common methods .
+
+List<?> obj=new HashList<>();
+TreeList
+HashList
+
+Set
+TreeSet
+HashSet
+
+
+
+
+ */

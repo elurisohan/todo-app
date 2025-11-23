@@ -22,6 +22,8 @@ public class AuthController {
     private final ProjectService projectService;
     private final TaskService taskService;
 
+    /*IOC is a principle and DI is one of the implementation of IOC. DI is classified as Field Injection, Constructor Inje and Getter Setter Injection. Constructor Injection is most preferred.*/
+
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest request){
         return ResponseEntity.ok(userService.register(request));
