@@ -35,7 +35,7 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.getProjectByUser(username));
     }
 
-//Note: Method overloading is not an issue across different classes.
+    //Note: Method overloading is not an issue across different classes.
     @PatchMapping("/{projectId}")
     public ResponseEntity<?> updateProject(@AuthenticationPrincipal UserDetails userDetails, @PathVariable int projectId, @RequestBody ProjectDTO updatedProject){
         String username=userDetails.getUsername();
@@ -49,3 +49,4 @@ public class ProjectController {
         return ResponseEntity.noContent().build();
     }
 }
+
