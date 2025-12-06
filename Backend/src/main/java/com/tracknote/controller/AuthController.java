@@ -12,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController//Controller + ResponseBody
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor//It takes the final variables and creates a constructor. If you don't use @RequiredArgsConstructor (or manually define a constructor) in your class but have final fields, Java will not generate a default (no-arg) constructor for you. This is because: Final fields must be initialized exactly once, either at their declaration or inside every constructor. If you don't initialize final fields where declared, and don't define a constructor that initializes them, the code will not compile. Java only provides a default no-arg constructor if you don't define any constructor and if there are no final fields that require initialization.

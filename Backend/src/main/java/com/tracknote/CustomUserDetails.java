@@ -22,6 +22,19 @@ public class CustomUserDetails implements UserDetailsService {
         User user =userRepository.findByUsername(username).
                 orElseThrow(()->new UserNotFoundException("User not found"));
 
-        return new org.springframework.security.core.userdetails.User(user.getUsername(),user.getPassword(),new ArrayList<>());
+        return new org.springframework.security.core.userdetails.User(user.getUsername(),user.getPassword(),new ArrayList<>());//The third argument is Collection<? extends GrantedAuthority> authorities.​You are passing an empty list of authorities, meaning “this user has no roles/permissions configured yet.”​. Later, when you add roles (like ROLE_USER, ROLE_ADMIN), you would replace new ArrayList<>() with a collection of GrantedAuthority objects built from your user’s roles
     }
 }
+// CustomUserDetails bridges our DB User entity with Spring Security's authentication system.
+// - Spring Security doesn't know about our com.tracknote.model.User.
+// - It only understands objects that implement UserDetails.
+// - loadUserByUsername(String username) is the standard method Spring Security calls during login
+//   to fetch user data from our database.
+// - Here we:
+//   1) Use UserRepository to find the User by username.
+//   2) If not found, throw an exception.
+//   3) Convert our User entity into Spring Security's built-in UserDetails implementation
+//      (org.springframework.security.core.userdetails.User), passing username, password,
+//      and authorities.
+// - The returned UserDetails object is what Spring Security uses to authenticate and authorize
+//   the user for incoming requests.

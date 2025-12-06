@@ -13,23 +13,43 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-    @Configuration
+import java.util.List;
+
+@Configuration
     @EnableWebSecurity
     @RequiredArgsConstructor
     public class SecurityConfig{
+// securityFilterChain(HttpSecurity http):
+// - HttpSecurity is Spring Security's config object for HTTP security.
+// - Methods like csrf(...), sessionManagement(...), authorizeHttpRequests(...), anyRequest().authenticated(),
+//   and addFilterBefore(...) are built-in configuration methods on HttpSecurity.
+// - Here we:
+//   1) Disable CSRF for a stateless REST API.
+//   2) Make sessions STATELESS (we use JWT, no server-side session).
+//   3) Allow public access to /api/v1/auth/**, /error, /actuator/health.
+//   4) Require authentication for any other request.
+//   5) Insert our JwtAuthFilter before UsernamePasswordAuthenticationFilter in the filter chain.
+// - http.build() converts this configuration into a SecurityFilterChain bean that Spring Security uses at runtime.
 
         private final JwtAuthFilter jwtAuthFilter;
 
         //HttpSecurity is just a object to define rules
+        //Prefer centralized CORS config (one place) for simplicity and security.
+
+//        Use strict origins (no *) in production.
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
             return http
                     .csrf(AbstractHttpConfigurer::disable)
+                    .cors(cors->cors.configurationSource(corsConfigurationSource()))
                     .sessionManagement(sess->sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .authorizeHttpRequests(auth->auth.requestMatchers("/api/v1/auth/**","/error","/actuator/health").permitAll()
-                    .anyRequest().authenticated()
-            ).addFilterBefore(jwtAuthFilter,UsernamePasswordAuthenticationFilter.class)
+                                            .anyRequest().authenticated())
+                    .addFilterBefore(jwtAuthFilter,UsernamePasswordAuthenticationFilter.class)
                     .build();
         }
 
@@ -53,6 +73,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
         @Bean
         public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception{
             return config.getAuthenticationManager();
+        }
+
+        @Bean
+        public CorsConfigurationSource corsConfigurationSource(){
+            CorsConfiguration configuration=new CorsConfiguration();
+            configuration.setAllowedHeaders(List.of("*"));
+            configuration.setAllowedMethods(List.of("GET","POST","PATCH","DELETE","PUT","OPTIONS"));
+            configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+            configuration.setAllowCredentials(true);
+
+            UrlBasedCorsConfigurationSource source=new UrlBasedCorsConfigurationSource();
+            source.registerCorsConfiguration("/**",configuration);
+            return source;
         }
     }
 
