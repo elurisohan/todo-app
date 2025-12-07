@@ -27,6 +27,7 @@ This code was giving errors. because we cannot use setToken inside useEffect bec
 
     const logout=()=>{
         localStorage.removeItem("token");
+        setToken(null);
     }
 
     const isAuthenticated=!!token;

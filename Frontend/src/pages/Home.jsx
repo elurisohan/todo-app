@@ -2,7 +2,7 @@ import { getProjects } from "../services/projectService";
 import { AuthContext } from "../context/AuthContext";
 import {  useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CreateModal from "../components/CreateModal";
+import CreateModal from "../components/createModal";
 
 
 function Home(){

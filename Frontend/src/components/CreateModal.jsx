@@ -20,7 +20,7 @@ export default function CreateModal({onClose,onProjectCreated}){
         onClose();
        }
        catch(err){
-           setError("Failed to vreate Project")
+           setError(err.message|| "Failed to vreate Project")
        }
        finally{
         setLoading(false)
