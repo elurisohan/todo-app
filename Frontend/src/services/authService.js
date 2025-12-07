@@ -17,7 +17,8 @@ export async function registerUser(details){
     const response=await api.post(`${api_url}/register`,details);
         return response.data;
 } catch (err){
-        throw err.response?.data ||  { message: "Network error" };
-}
+        const payload= err.response?.data ||  { message: "Network error" };
+        throw payload
+    }
 
 }

@@ -2,8 +2,8 @@ import { useState } from "react";
 import api from "../api/axios";
 
 export default function CreateModal({onClose,onProjectCreated}){
-    const [projectName,setProjectName]=useState(null);
-    const [projectDescription,setProjectDescription]=useState(null);
+    const [name,setName]=useState(null);
+    const [description,setDescription]=useState(null);
     const [loading,setLoading]=useState(false);
     const [error,setError]=useState(false)
 
@@ -13,14 +13,14 @@ export default function CreateModal({onClose,onProjectCreated}){
         setError(false);
 
         try{
-        const res=api.post("/projects",{
-            projectName,projectDescription
+        const res=api.post("/projects/",{
+            name,description
         })
         onProjectCreated(res.data);
         onClose();
        }
        catch(err){
-           setError(err.message|| "Failed to vreate Project")
+           setError(err.message|| "Failed to create Project")
        }
        finally{
         setLoading(false)
@@ -38,16 +38,16 @@ export default function CreateModal({onClose,onProjectCreated}){
             <input
             type="text"
             placeholder="Project name"
-            value={projectName}
-            onChange={(e)=>setProjectName(e.target.value)}
+            value={name}
+            onChange={(e)=>setName(e.target.value)}
             required
             />
 
             <label>Project Description</label>
             <textarea
             required
-            value={projectDescription}
-            onChange={(e)=>setProjectDescription(e.target.value)}
+            value={description}
+            onChange={(e)=>setDescription(e.target.value)}
             />
             <button type="button" onClick={onClose}>cancel</button>
 

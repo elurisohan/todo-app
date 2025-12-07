@@ -9,6 +9,6 @@ export async function getProjects() {
 }
 
 export async function createProject(projectData){
-    const response=await api.post("/projects",projectData);
+    const response=await api.post("/projects/",projectData);
     return response.data;
 }

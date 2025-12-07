@@ -40,15 +40,15 @@ function Home(){
                                                         onClick={logout} passes the function reference so React can call it later on click.*/
 //here why can't we pass the project as arg instead of a property
     function handleSubmit(newProject){
-        setProjects((prev)=>{[...prev,newProject]})
+        setProjects((prev)=>[...prev,newProject])
     }
-
+//JS evaluate the code we write insideas  Call setShowModal(true) RIGHT NOW 2. Get the return value (undefined) 3. Assign that return value to onClick. Which is why you need to write as Create a new function: () => setShowModal(true) Assign that FUNCTION to onClick 3. React will call this function when clicked
     return (
         <div id="root">
         <h1>My Projects</h1>
 
         <button disabled>Profile</button>
-        <button onClick={setShowModal(true)}>+</button>
+        <button onClick={()=>setShowModal(true)}>+</button>
      
         <button onClick={()=>{
             logout ();

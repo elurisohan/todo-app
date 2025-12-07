@@ -1,13 +1,34 @@
 import { useState } from "react";
+import { registerUser } from "../services/authService";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
   const [name, setName] = useState("");
+  const [username,setUsername]=useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading,setLoading]=useState(false);
+  const [error,setError]=useState(null)
 
-  const handleSubmit = (e) => {
+  const navigate=useNavigate();
+
+
+  //after a user signs up. they should be navigated to login page again. Here, we send bundled registration details to the registeruser methof in authservice
+  const handleSubmit =async (e) => {
     e.preventDefault();
-    console.log("Signup:", { name, email, password });
+    setLoading(true);
+    setError(false);
+
+    try{
+      const registration_request=await registerUser({name,username,email,password})
+      navigate('/login')
+    }
+    catch(err){
+      throw (err.message||"Registration Failed")
+    }
+    finally{
+      setLoading(false)
+    }    
   };
 
   return (
@@ -25,6 +46,14 @@ function Register() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
+        />
+
+        <input
+        type="text"
+        value={username}
+        onChange={(e)=>setUsername(e.target.value)}
+        placeholder="Username"
+        required
         />
 
         <input
@@ -47,9 +76,10 @@ function Register() {
 
         <button
           type="submit"
+          
           className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
         >
-          Create Account
+          {loading?"Creating account...":"Create Account"}
         </button>
       </form>
     </div>
