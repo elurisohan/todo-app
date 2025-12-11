@@ -2,8 +2,8 @@ import { useState } from "react";
 import api from "../api/axios";
 
 export default function CreateModal({onClose,onProjectCreated}){
-    const [name,setName]=useState(null);
-    const [description,setDescription]=useState(null);
+    const [name,setName]=useState("");
+    const [description,setDescription]=useState("");
     const [loading,setLoading]=useState(false);
     const [error,setError]=useState(false)
 
@@ -13,7 +13,7 @@ export default function CreateModal({onClose,onProjectCreated}){
         setError(false);
 
         try{
-        const res=api.post("/projects/",{
+        const res=await api.post("/projects/",{
             name,description
         })
         onProjectCreated(res.data);
@@ -27,7 +27,7 @@ export default function CreateModal({onClose,onProjectCreated}){
        }
     }
     return (
-        <div id="root">
+        <div id="modal_root">
         <h1>Create Project</h1>
 
 

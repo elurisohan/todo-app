@@ -12,12 +12,23 @@ import ProtectedRoute from './components/ProtectedRoute.jsx';
 
 function App() {
   //const [count, setCount] = useState(0)
-
+//in React JSX style is an attribute on elements like nav, div, etc., and its value is a JavaScript object instead of a string.
   return (
     <BrowserRouter>
-    <nav>
-      <div style={{padding:"20px", }}>
-    <Link to='/login'>login</Link>|{" "}
+    <nav 
+    style={{display:'flex',
+    justifyContent:'center',
+    alignItems:'center',
+    padding:'20px',
+    borderBottom:'1px solid #ddd '
+    }}>
+      <div style={{
+        padding:"20px",
+        display:'flex',
+        gap:'16px',
+        fontSize:'18px' }}>
+    <Link style={{textDecoration:'none'
+    }} to='/login'>login</Link>|{" "}
     <Link to='/signup'>signup</Link>|{" "}
     <Link to='/home'>Home</Link>
 </div>

@@ -44,13 +44,15 @@ function Home(){
     }
 //JS evaluate the code we write insideas  Call setShowModal(true) RIGHT NOW 2. Get the return value (undefined) 3. Assign that return value to onClick. Which is why you need to write as Create a new function: () => setShowModal(true) Assign that FUNCTION to onClick 3. React will call this function when clicked
     return (
-        <div id="root">
+        <div id="home_root" style={styles.home_root}>
         <h1>My Projects</h1>
 
         <button disabled>Profile</button>
         <button onClick={()=>setShowModal(true)}>+</button>
      
-        <button onClick={()=>{
+        <button
+        style={styles.button}
+        onClick={()=>{
             logout ();
             navigate('/login')
         }}>Logout</button>
@@ -70,13 +72,27 @@ function Home(){
         {showmodal && (
         <CreateModal
             onClose={()=>setShowModal(false)}
-            onProjectCreated={()=>handleSubmit()}
+            onProjectCreated={(newproject)=>handleSubmit(newproject)}
         />)}
 
 
     </div>)
 }
 export default Home;
+
+const styles={
+    home_root:{
+        display:'flex',
+        justifyContent:'center',
+        flexDirection:'column'
+
+
+    }
+,
+button:{
+    justifyContent:'right'
+}
+}
 
 /*
 Render components with JSX: <MyComponent prop1={...} />.

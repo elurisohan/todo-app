@@ -23,8 +23,8 @@ function Register() {
       const registration_request=await registerUser({name,username,email,password})
       navigate('/login')
     }
-    catch(err){
-      throw (err.message||"Registration Failed")
+    catch(error){
+      throw (error.response||"Registration Failed")
     }
     finally{
       setLoading(false)
@@ -32,17 +32,18 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div style={styles.container}>
       <form
+      style={styles.auth_form}
         onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-lg shadow-md w-80"
+        //className="bg-white p-6 rounded-lg shadow-md w-80"
       >
-        <h2 className="text-2xl font-semibold text-center mb-4">Sign Up</h2>
+        <h2 style={styles.heading}>Sign Up</h2>
 
         <input
           type="text"
           placeholder="Full Name"
-          className="w-full p-2 border rounded mb-3"
+          //className="w-full p-2 border rounded mb-3"
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
@@ -59,7 +60,7 @@ function Register() {
         <input
           type="email"
           placeholder="Email"
-          className="w-full p-2 border rounded mb-3"
+          //className="w-full p-2 border rounded mb-3"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -68,16 +69,15 @@ function Register() {
         <input
           type="password"
           placeholder="Password"
-          className="w-full p-2 border rounded mb-3"
+          //className="w-full p-2 border rounded mb-3"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
 
         <button
+        style={styles.button}
           type="submit"
-          
-          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
         >
           {loading?"Creating account...":"Create Account"}
         </button>
@@ -87,3 +87,13 @@ function Register() {
 }
 
 export default Register;
+
+
+const styles={
+container:{
+  display:'flex',
+  alignItems:'center',
+  justifyContent:'center',
+  flexDirection:'column'
+}
+}

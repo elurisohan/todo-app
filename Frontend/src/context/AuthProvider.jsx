@@ -21,12 +21,12 @@ This code was giving errors. because we cannot use setToken inside useEffect bec
     //login function
 
     const login=(newToken)=>{
-        localStorage.setItem("token",newToken);
+        sessionStorage.setItem("token",newToken);
         setToken(newToken);
     }
 
     const logout=()=>{
-        localStorage.removeItem("token");
+        sessionStorage.removeItem("token");
         setToken(null);
     }
 
