@@ -4,8 +4,44 @@ import api from "../api/axios";
 export default function CreateModal({onClose,onProjectCreated}){
     const [name,setName]=useState("");
     const [description,setDescription]=useState("");
+    const [tasks, setTasks] = useState([]);
     const [loading,setLoading]=useState(false);
     const [error,setError]=useState(false)
+
+    // Task form states
+    const [taskName, setTaskName] = useState("");
+    const [taskDescription, setTaskDescription] = useState("");
+    const [taskStatus, setTaskStatus] = useState("NEW");
+    const [taskPriority, setTaskPriority] = useState("LOW");
+    const [taskDueDate, setTaskDueDate] = useState("");
+
+    function addTask(){
+        if(!taskName.trim()) {
+            alert("Task name is required");
+            return;
+        }
+
+        const newTask = {
+            name: taskName,
+            description: taskDescription,
+            status: taskStatus,
+            priority: taskPriority,
+            dueDate: taskDueDate
+        };
+
+        setTasks([...tasks, newTask]);
+        
+        // Reset task form
+        setTaskName("");
+        setTaskDescription("");
+        setTaskStatus("NEW");
+        setTaskPriority("LOW");
+        setTaskDueDate("");
+    }
+
+    function removeTask(index){
+        setTasks(tasks.filter((_, i) => i !== index));
+    }
 
     async function handleSubmit(e){
         e.preventDefault()
@@ -14,7 +50,9 @@ export default function CreateModal({onClose,onProjectCreated}){
 
         try{
         const res=await api.post("/projects/",{
-            name,description
+            name,
+            description,
+            tasks
         })
         onProjectCreated(res.data);
         onClose();
@@ -26,33 +64,288 @@ export default function CreateModal({onClose,onProjectCreated}){
         setLoading(false)
        }
     }
+
     return (
-        <div id="modal_root">
-        <h1>Create Project</h1>
+        <div style={styles.modalOverlay}>
+        <div style={styles.modalContent}>
+        <h2>Create Project</h2>
 
+        {error && <p style={{color:"red"}}>{error}</p>}
 
-        {error && <p color="red">{error}</p>}
+        <form onSubmit={handleSubmit}>
+            <div style={styles.formGroup}>
+                <label style={styles.label}>Project Title *</label>
+                <input
+                    style={styles.input}
+                    type="text"
+                    placeholder="Project name"
+                    value={name}
+                    onChange={(e)=>setName(e.target.value)}
+                    required
+                />
+            </div>
 
-        <form>
-            <label>Project Title</label>
-            <input
-            type="text"
-            placeholder="Project name"
-            value={name}
-            onChange={(e)=>setName(e.target.value)}
-            required
-            />
+            <div style={styles.formGroup}>
+                <label style={styles.label}>Project Description *</label>
+                <textarea
+                    style={styles.textarea}
+                    placeholder="Describe your project"
+                    value={description}
+                    onChange={(e)=>setDescription(e.target.value)}
+                    required
+                />
+            </div>
 
-            <label>Project Description</label>
-            <textarea
-            required
-            value={description}
-            onChange={(e)=>setDescription(e.target.value)}
-            />
-            <button type="button" onClick={onClose}>cancel</button>
+            {/* Tasks Section */}
+            <div style={styles.tasksSection}>
+                <h3>Tasks (Optional)</h3>
+                
+                {/* Task Form */}
+                <div style={styles.taskForm}>
+                    <div style={styles.formGroup}>
+                        <label style={styles.label}>Task Name</label>
+                        <input
+                            style={styles.input}
+                            type="text"
+                            placeholder="Task name"
+                            value={taskName}
+                            onChange={(e)=>setTaskName(e.target.value)}
+                        />
+                    </div>
 
-            <button type="submit" onClick={handleSubmit}>   {loading ? "Creating..." : "Create"}</button>
+                    <div style={styles.formGroup}>
+                        <label style={styles.label}>Task Description</label>
+                        <textarea
+                            style={styles.textarea}
+                            placeholder="Task description"
+                            value={taskDescription}
+                            onChange={(e)=>setTaskDescription(e.target.value)}
+                        />
+                    </div>
+
+                    <div style={styles.formRow}>
+                        <div style={styles.formGroup}>
+                            <label style={styles.label}>Status</label>
+                            <select 
+                                style={styles.select}
+                                value={taskStatus} 
+                                onChange={(e)=>setTaskStatus(e.target.value)}
+                            >
+                                <option value="NEW">NEW</option>
+                                <option value="IN_PROGRESS">IN_PROGRESS</option>
+                                <option value="COMPLETED">COMPLETED</option>
+                                <option value="BLOCKED">BLOCKED</option>
+                            </select>
+                        </div>
+
+                        <div style={styles.formGroup}>
+                            <label style={styles.label}>Priority</label>
+                            <select 
+                                style={styles.select}
+                                value={taskPriority} 
+                                onChange={(e)=>setTaskPriority(e.target.value)}
+                            >
+                                <option value="LOW">LOW</option>
+                                <option value="MEDIUM">MEDIUM</option>
+                                <option value="HIGH">HIGH</option>
+                                <option value="URGENT">URGENT</option>
+                            </select>
+                        </div>
+
+                        <div style={styles.formGroup}>
+                            <label style={styles.label}>Due Date</label>
+                            <input
+                                style={styles.input}
+                                type="date"
+                                value={taskDueDate}
+                                onChange={(e)=>setTaskDueDate(e.target.value)}
+                            />
+                        </div>
+                    </div>
+
+                    <button type="button" onClick={addTask} style={styles.addTaskButton}>
+                        + Add Task
+                    </button>
+                </div>
+
+                {/* Task List */}
+                {tasks.length > 0 && (
+                    <div style={styles.tasksList}>
+                        <h4>Added Tasks ({tasks.length})</h4>
+                        {tasks.map((task, index) => (
+                            <div key={index} style={styles.taskItem}>
+                                <div style={styles.taskItemHeader}>
+                                    <strong>{task.name}</strong>
+                                    <button 
+                                        type="button" 
+                                        onClick={()=>removeTask(index)}
+                                        style={styles.removeButton}
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
+                                <p style={styles.taskItemDesc}>{task.description}</p>
+                                <div style={styles.taskItemDetails}>
+                                    <span>Status: {task.status}</span>
+                                    <span>Priority: {task.priority}</span>
+                                    {task.dueDate && <span>Due: {task.dueDate}</span>}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            <div style={styles.buttonGroup}>
+                <button type="button" onClick={onClose} style={styles.cancelButton}>Cancel</button>
+                <button type="submit" disabled={loading} style={styles.submitButton}>
+                    {loading ? "Creating..." : "Create Project"}
+                </button>
+            </div>
         </form>
         </div>
+        </div>
     )
+}
+
+const styles = {
+    modalOverlay: {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 1000
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        padding: '30px',
+        borderRadius: '8px',
+        maxWidth: '700px',
+        width: '90%',
+        maxHeight: '90vh',
+        overflowY: 'auto'
+    },
+    formGroup: {
+        marginBottom: '15px'
+    },
+    formRow: {
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr 1fr',
+        gap: '10px'
+    },
+    label: {
+        display: 'block',
+        marginBottom: '5px',
+        fontWeight: '500',
+        color: '#333'
+    },
+    input: {
+        width: '100%',
+        padding: '8px',
+        borderRadius: '4px',
+        border: '1px solid #ddd',
+        fontSize: '14px',
+        boxSizing: 'border-box'
+    },
+    textarea: {
+        width: '100%',
+        padding: '8px',
+        borderRadius: '4px',
+        border: '1px solid #ddd',
+        fontSize: '14px',
+        minHeight: '80px',
+        boxSizing: 'border-box',
+        resize: 'vertical'
+    },
+    select: {
+        width: '100%',
+        padding: '8px',
+        borderRadius: '4px',
+        border: '1px solid #ddd',
+        fontSize: '14px',
+        boxSizing: 'border-box'
+    },
+    tasksSection: {
+        marginTop: '25px',
+        padding: '20px',
+        backgroundColor: '#f5f5f5',
+        borderRadius: '8px'
+    },
+    taskForm: {
+        marginTop: '15px'
+    },
+    addTaskButton: {
+        backgroundColor: '#4CAF50',
+        color: 'white',
+        border: 'none',
+        padding: '8px 16px',
+        borderRadius: '4px',
+        cursor: 'pointer',
+        fontSize: '14px',
+        marginTop: '10px'
+    },
+    tasksList: {
+        marginTop: '20px'
+    },
+    taskItem: {
+        backgroundColor: 'white',
+        padding: '12px',
+        marginBottom: '10px',
+        borderRadius: '5px',
+        border: '1px solid #ddd'
+    },
+    taskItemHeader: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '5px'
+    },
+    taskItemDesc: {
+        margin: '5px 0',
+        fontSize: '14px',
+        color: '#666'
+    },
+    taskItemDetails: {
+        display: 'flex',
+        gap: '15px',
+        fontSize: '13px',
+        color: '#888'
+    },
+    removeButton: {
+        backgroundColor: '#f44336',
+        color: 'white',
+        border: 'none',
+        padding: '4px 12px',
+        borderRadius: '4px',
+        cursor: 'pointer',
+        fontSize: '12px'
+    },
+    buttonGroup: {
+        display: 'flex',
+        gap: '10px',
+        justifyContent: 'flex-end',
+        marginTop: '25px'
+    },
+    cancelButton: {
+        padding: '10px 20px',
+        borderRadius: '5px',
+        border: '1px solid #ddd',
+        backgroundColor: 'white',
+        cursor: 'pointer',
+        fontSize: '14px'
+    },
+    submitButton: {
+        padding: '10px 20px',
+        borderRadius: '5px',
+        border: 'none',
+        backgroundColor: '#2196F3',
+        color: 'white',
+        cursor: 'pointer',
+        fontSize: '14px'
+    }
 }
