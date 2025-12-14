@@ -52,6 +52,15 @@ public class ExceptionController {
     public ResponseEntity<?> projectDeletionException(ProjectDeletionException ex){
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleInvalidArguments(MethodArgumentNotValidException ex){
+        String response=ex.getBindingResult()
+                .getFieldErrors()
+                .get(0)
+                .getDefaultMessage();
+        return ResponseEntity.badRequest().body(response);
+    }
 }
 
 

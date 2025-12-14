@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,14 +38,15 @@ public class TaskService {
 
 
     public Task updateTask(int id,TaskDTO updatedTask){
+        //Considering frontend shows only the tasks which are available. I haven't checked if the task exists.
         Task task=getTask(id);
-        task.setName(updatedTask.getName());
-        task.setDescription(updatedTask.getDescription());
-        task.setStatus(updatedTask.getStatus());
-        task.setPriority(updatedTask.getPriority());
-        task.setDueDate(updatedTask.getDueDate());
+        Optional.ofNullable(updatedTask.getName()).ifPresent(task::setName);
+        Optional.ofNullable(updatedTask.getDescription()).ifPresent(task::setDescription);
+        Optional.ofNullable(updatedTask.getStatus()).ifPresent(task::setStatus);
+        Optional.ofNullable(updatedTask.getPriority()).ifPresent(task::setPriority);
+        Optional.ofNullable(updatedTask.getDueDate()).ifPresent(task::setDueDate);
         return taskRepository.save(task);
-    }
+       }
 
     public void deleteTask(int id){
         taskRepository.deleteById(id);

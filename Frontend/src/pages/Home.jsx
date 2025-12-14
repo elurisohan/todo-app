@@ -46,7 +46,8 @@ function Home(){
     return (
         <div id="home_root" style={styles.home_root}>
         <h1>My Projects</h1>
-
+        
+        <div id='home_buttons' style={styles.home_buttons}>
         <button disabled>Profile</button>
         <button onClick={()=>setShowModal(true)}>+</button>
      
@@ -56,19 +57,23 @@ function Home(){
             logout ();
             navigate('/login')
         }}>Logout</button>
-   
+   </div>
+
+   <div style={styles.project_home}>
         {projects.length===0?(<p>No projects</p>):
         (<ul>
         {projects.map((project)=>(
-            <li key={project.id} style={{
+            <li key={project.projectId} style={{
                 padding:"10px"
             }}>
                 <strong>{project.name}</strong>
-                <p>{project.description}</p>
+                <p>{project.desc}</p>
+                <p>{project.}</p>
+
             </li>
         ))}
         </ul>)}
-
+</div>
         {showmodal && (
         <CreateModal
             onClose={()=>setShowModal(false)}
@@ -91,6 +96,18 @@ const styles={
 ,
 button:{
     justifyContent:'right'
+}
+,
+home_buttons:{
+    display:'flex',
+    justifyContent:'right',
+    gap:'20px'
+},
+
+project_home:{
+    display:"flex",
+    justifyContent:"center",
+    alignContent:"right"
 }
 }
 
