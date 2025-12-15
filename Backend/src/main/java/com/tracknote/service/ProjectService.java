@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,17 +33,27 @@ public class ProjectService {
 
     public ProjectResponseDTO createProject(String username, ProjectDTO project){
         User usr=getUserByUsername(username);
-        Project project1=Project.builder().name(project.getName()).description(project.getDescription()).tasks(project.getTasks()).owner(usr).build();// creates a new instance of your Project entity. Why create a new instance here? Entities represent rows in your database. You need an actual Project object to save a new project record.This object is used by Hibernate/JPA to know what data should be persisted in the database.
+        Project project1=Project.builder().name(project.getName()).description(project.getDescription()).tasks(new ArrayList<>()).owner(usr).build();// creates a new instance of your Project entity. Why create a new instance here? Entities represent rows in your database. You need an actual Project object to save a new project record.This object is used by Hibernate/JPA to know what data should be persisted in the database.
+
+
+        if (project.getTasks()!=null && !project.getTasks().isEmpty())//Here we first check if a list exists and then check if it has elements inside it, because ist could be empty and if we check directly. we could get a null pointer exception
+        {//project1.getTasks() → gives you the List<Task> object. .add(task) → uses List.add(Task element) to append that task to the end of the list
+            for (Task task : project.getTasks()){
+                task.setProject(project1);
+                project1.getTasks().add(task);
+        }
+        }
         Project savedProject= projectRepository.save(project1);
         return dtoMapper.toProjectResponse(savedProject);
     }
 
     public List<ProjectResponseDTO> getProjectByUser(String username){
         //User username=getUserByUsername(username);
+
         return projectRepository.findAllByOwnerUsername(username)
-                .stream()
-                .map(dtoMapper::toProjectResponse)//method reference. 2 types of syntax - classname::method | object::instancemethod
-                .collect(Collectors.toList());
+                .stream()// // Stream<Project>
+                .map(dtoMapper::toProjectResponse)// Stream<ProjectResponseDTO> method reference. 2 types of syntax - classname::method | object::instancemethod
+                .collect(Collectors.toList()); // List<ProjectResponseDTO>. Now it's a List!
         /*Diff bw toList() terminal method and collect(Collectors.toList()) method is that the initial method gives an immutable list while the later gives a mutable list. */
     }
 
@@ -52,20 +63,16 @@ public class ProjectService {
     }
 
     public ProjectResponseDTO updateProject(int id, String username, ProjectDTO updatedProject ) {
-        //Veri
         Project proj = getProject(id);
         if (!proj.getOwner().getUsername().equals(username)) {
             throw new UnauthorizedException("User " + username + " not authorized to delete this project.");
         }
-            Project updatedPro= Project.builder().name(updatedProject.getName()).description(updatedProject.getDescription()).tasks(updatedProject.getTasks()).build();
-
-//            proj.setName(updatedProject.getName());
-  //          proj.setDescription(updatedProject.getDescription());
-            Project updatedProj=projectRepository.save(updatedPro);
-            return dtoMapper.toProjectResponse(updatedProj);
-
+            Optional.ofNullable(updatedProject.getName()).ifPresent(proj::setName);
+            Optional.ofNullable(updatedProject.getDescription()).ifPresent(proj::setDescription);
+            Optional.ofNullable(updatedProject.getTasks()).ifPresent(proj::setTasks);
+            Project updatedProj=projectRepository.save(proj);
+            return dtoMapper.toProjectResponse(proj);
     }
-
 
     public void deleteProject(int id, String username){
         Project project=projectRepository.findById(id)
@@ -87,6 +94,5 @@ public class ProjectService {
 
     public Project getProject(int id){
         return projectRepository.findById(id).orElseThrow(()->new ProjectNotFoundException(id));
-
     }
 }

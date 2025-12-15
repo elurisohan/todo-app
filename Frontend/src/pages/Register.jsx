@@ -23,16 +23,28 @@ function Register() {
       const registration_request=await registerUser({name,username,email,password})
       navigate('/login')
     }
-    catch(error){
-      throw (error.response||"Registration Failed")
-    }
-    finally{
-      setLoading(false)
-    }    
+   catch (error) {
+  const message=error??
+  error?.response?.data??
+  "Cannot connect to the server"
+
+/* To troubleshoot the reason behind inaccurate response from backend , try printing it as following. 
+console.log("FULL ERROR:", error);
+console.log("RESPONSE:", error.response);
+console.log("DATA:", error.response?.data);
+*/  
+  setError(message)
+
+}
+finally{
+  setLoading(false)
+}
   };
 
   return (
     <div style={styles.container}>
+
+      {error && <p style={{color:"red"}}>{error}</p>}
       <form
       style={styles.auth_form}
         onSubmit={handleSubmit}
