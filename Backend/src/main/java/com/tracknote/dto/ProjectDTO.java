@@ -1,7 +1,6 @@
 package com.tracknote.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tracknote.model.Task;
 import com.tracknote.model.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -22,6 +21,8 @@ public class ProjectDTO {
     @NotBlank(message = "Please enter your project description")
     private String description;
 
-    private List<Task> tasks;
+        // Tasks are NOT managed through project updates
+    // Use separate TaskController endpoints: POST /projects/{id}/tasks, PATCH /tasks/{id}
+    // This follows Single Responsibility Principle and RESTful API design
 
 }
