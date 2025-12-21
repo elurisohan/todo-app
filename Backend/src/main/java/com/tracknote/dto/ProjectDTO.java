@@ -22,6 +22,5 @@ public class ProjectDTO {
     @NotBlank(message = "Please enter your project description")
     private String description;
 
-    private List<Task> tasks;
 
 }

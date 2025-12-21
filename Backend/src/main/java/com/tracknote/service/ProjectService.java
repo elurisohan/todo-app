@@ -32,7 +32,7 @@ public class ProjectService {
 
     public ProjectResponseDTO createProject(String username, ProjectDTO project){
         User usr=getUserByUsername(username);
-        Project project1=Project.builder().name(project.getName()).description(project.getDescription()).tasks(project.getTasks()).owner(usr).build();// creates a new instance of your Project entity. Why create a new instance here? Entities represent rows in your database. You need an actual Project object to save a new project record.This object is used by Hibernate/JPA to know what data should be persisted in the database.
+        Project project1=Project.builder().name(project.getName()).description(project.getDescription()).owner(usr).build();// creates a new instance of your Project entity. Why create a new instance here? Entities represent rows in your database. You need an actual Project object to save a new project record.This object is used by Hibernate/JPA to know what data should be persisted in the database.
         Project savedProject= projectRepository.save(project1);
         return dtoMapper.toProjectResponse(savedProject);
     }
@@ -55,15 +55,15 @@ public class ProjectService {
         //Veri
         Project proj = getProject(id);
         if (!proj.getOwner().getUsername().equals(username)) {
-            throw new UnauthorizedException("User " + username + " not authorized to delete this project.");
+            throw new UnauthorizedException("User " + username + " not authorized to update this project.");
         }
-            Project updatedPro= Project.builder().name(updatedProject.getName()).description(updatedProject.getDescription()).tasks(updatedProject.getTasks()).build();
+        else {
+            Optional.ofNullable(updatedProject.getName()).ifPresent(proj::setName);
+            Optional.ofNullable(updatedProject.getDescription()).ifPresent(proj::setDescription);
 
-//            proj.setName(updatedProject.getName());
-  //          proj.setDescription(updatedProject.getDescription());
-            Project updatedProj=projectRepository.save(updatedPro);
-            return dtoMapper.toProjectResponse(updatedProj);
-
+            projectRepository.save(proj);
+            return dtoMapper.toProjectResponse(proj);
+        }
     }
 
 

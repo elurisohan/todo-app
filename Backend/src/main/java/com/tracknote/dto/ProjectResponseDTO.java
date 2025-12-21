@@ -18,5 +18,4 @@ public class ProjectResponseDTO {
 
     private Date createdAt;
 
-    private List<TaskDTO> tasks;
 }
