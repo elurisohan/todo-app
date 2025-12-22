@@ -51,9 +51,9 @@ export default function CreateModal({onClose,onProjectCreated}){
         try{
         const res=await api.post("/projects/",{
             name,
-            description,
-            tasks
+            description
         })
+        
         onProjectCreated(res.data);
         onClose();
        }

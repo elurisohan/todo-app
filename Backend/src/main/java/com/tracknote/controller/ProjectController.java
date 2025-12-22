@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value="/api/v1/projects")
+@CrossOrigin(origins = "http://localhost:5173")
 public class ProjectController {
 
     private final ProjectService projectService;
@@ -39,7 +40,7 @@ public class ProjectController {
     @PatchMapping("/{projectId}")
     public ResponseEntity<?> updateProject(@AuthenticationPrincipal UserDetails userDetails, @PathVariable int projectId, @RequestBody ProjectDTO updatedProject){
         String username=userDetails.getUsername();
-        return ResponseEntity.ok(projectService.updateProject(projectId,username,updatedProject));
+        return ResponseEntity.ok(projectService.updateProject(username,projectId,updatedProject));
     }
 
     @DeleteMapping("/{id}")

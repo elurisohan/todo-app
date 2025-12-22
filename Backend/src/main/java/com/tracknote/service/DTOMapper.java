@@ -2,6 +2,7 @@ package com.tracknote.service;
 
 import com.tracknote.dto.ProjectResponseDTO;
 import com.tracknote.dto.TaskDTO;
+import com.tracknote.dto.TaskResponseDTO;
 import com.tracknote.model.Project;
 import com.tracknote.model.Task;
 import lombok.AllArgsConstructor;
@@ -26,12 +27,6 @@ public class DTOMapper {
                 .desc(project.getDescription())
                 .createdAt(project.getCreatedAt())
                 //Task entity shouldn't be returned directly, as it could expose the id and the relationship bw Task and Project could recursively return infinite loop
-                .tasks(
-                        Optional.ofNullable(project.getTasks())//Optional is a class and ofNullable is static method. Method chaining with '.' for ofNullable and orElse.
-                                .orElse(Collections.emptyList())
-                        .stream()
-                        .map(this::toTaskDTO)
-                        .collect(Collectors.toList()))
                 .build();
     }
 
@@ -45,5 +40,19 @@ public class DTOMapper {
                 .build();
 
     }
+
+    public TaskResponseDTO toTaskResponse(Task task){
+        return TaskResponseDTO.builder()
+                .id(task.getId())
+                .projectName(task.getProject().getName())
+                .projectId(task.getProject().getId())
+                .name(task.getName())
+                .description(task.getDescription())
+                .status(task.getStatus())
+                .dueDate(task.getDueDate())
+                .priority(task.getPriority())
+                .build();
+    }
+
 
 }

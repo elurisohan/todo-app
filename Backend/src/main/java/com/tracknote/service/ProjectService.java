@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,7 +33,8 @@ public class ProjectService {
 
     public ProjectResponseDTO createProject(String username, ProjectDTO project){
         User usr=getUserByUsername(username);
-        Project project1=Project.builder().name(project.getName()).description(project.getDescription()).owner(usr).build();// creates a new instance of your Project entity. Why create a new instance here? Entities represent rows in your database. You need an actual Project object to save a new project record.This object is used by Hibernate/JPA to know what data should be persisted in the database.
+        Project project1=Project.builder().name(project.getName()).description(project.getDescription())
+                .tasks(new ArrayList<>()).owner(usr).build();// creates a new instance of your Project entity. Why create a new instance here? Entities represent rows in your database. You need an actual Project object to save a new project record.This object is used by Hibernate/JPA to know what data should be persisted in the database.
         Project savedProject= projectRepository.save(project1);
         return dtoMapper.toProjectResponse(savedProject);
     }
@@ -51,7 +53,7 @@ public class ProjectService {
         return projectRepository.findBySharedUsersUsername(username);
     }
 
-    public ProjectResponseDTO updateProject(int id, String username, ProjectDTO updatedProject ) {
+    public ProjectResponseDTO updateProject( String username,int id, ProjectDTO updatedProject ) {
         //Veri
         Project proj = getProject(id);
         if (!proj.getOwner().getUsername().equals(username)) {
@@ -60,7 +62,6 @@ public class ProjectService {
         else {
             Optional.ofNullable(updatedProject.getName()).ifPresent(proj::setName);
             Optional.ofNullable(updatedProject.getDescription()).ifPresent(proj::setDescription);
-
             projectRepository.save(proj);
             return dtoMapper.toProjectResponse(proj);
         }
@@ -68,8 +69,7 @@ public class ProjectService {
 
 
     public void deleteProject(int id, String username){
-        Project project=projectRepository.findById(id)
-                .orElseThrow(()->new ProjectNotFoundException(id));
+        Project project=getProject(id);
         //even after the project exist and user is the correct owner, if there is any other error. I want to log that properly.
         if (!project.getOwner().getUsername().equals(username)){
             throw new UnauthorizedException("User "+username+" not authorized to delete this project.");
